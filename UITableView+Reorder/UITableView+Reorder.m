@@ -12,8 +12,8 @@
 // CONFIGURATION_VALIDATION turns on some runtime testing to help programmers
 // use this category properly and automatically turns off when not in debug
 #ifdef DEBUG
-#define CONFIGURATION_VALIDATION
-//#undef CONFIGURATION_VALIDATION
+//#define CONFIGURATION_VALIDATION
+#undef CONFIGURATION_VALIDATION
 #endif
 
 // UITABLEVIEW_REORDER_DEVELOPMENT_PROJECT is defined in the project .pch
@@ -506,6 +506,14 @@ static void *allowsLongPressToReorderDuringEditingKey = &allowsLongPressToReorde
 		// Get the cell coordinates so we know where its center is
 		UITableViewCell *endCell = [self cellForRowAtIndexPath: self.toIndexPathForRowBeingMoved];
 		// Make the snap shot cell nicely disappear
+        
+        CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"shadowOpacity"];
+        anim.fromValue = [NSNumber numberWithFloat:0.2];
+        anim.toValue = [NSNumber numberWithFloat:0.0];
+        anim.duration = 0.25;
+        [self.snapShotOfCellBeingMoved.layer addAnimation:anim forKey:@"shadowOpacity"];
+        self.snapShotOfCellBeingMoved.layer.shadowOpacity = 0.0;
+        
 		[UIView animateWithDuration: 0.25 animations: ^{
 			self.snapShotOfCellBeingMoved.center = CGPointMake( self.snapShotOfCellBeingMoved.center.x, endCell.center.y );
 		} completion: ^( BOOL finished ) {
@@ -584,8 +592,8 @@ static void *allowsLongPressToReorderDuringEditingKey = &allowsLongPressToReorde
 		snapShot = [touchedCell snapshotViewAfterScreenUpdates: YES];
         // Maybe I should check if the snapShot is nil and fall back to some alternate method?
 		snapShot.frame = touchedCell.frame;
-		snapShot.alpha = 0.70;
-		snapShot.layer.shadowOpacity = 1.0;
+		snapShot.alpha = 0.90;
+		snapShot.layer.shadowOpacity = 0.2;
 		snapShot.layer.shadowRadius = 4.0;
 		snapShot.layer.shadowOffset = CGSizeMake( 0, 1.5 );
 		// Looks the same or better without the shadows path
@@ -599,14 +607,14 @@ static void *allowsLongPressToReorderDuringEditingKey = &allowsLongPressToReorde
 		snapShot = [[UIImageView alloc] initWithImage: cellImage];
 		snapShot.frame = touchedCell.frame;
 #  if 0	// Too gray....
-		snapShot.alpha = 0.70;
-		snapShot.layer.shadowOpacity = 1.0;
+		snapShot.alpha = 0.90;
+		snapShot.layer.shadowOpacity = 0.2;
 		snapShot.layer.shadowRadius = 4.0;
 		snapShot.layer.shadowOffset = CGSizeMake( 0, 1.5 );
 		snapShot.layer.shadowPath = [[UIBezierPath bezierPathWithRect: snapShot.layer.bounds] CGPath];
 #  elif 1	// Doing the rasterize gets the gray out...
-		snapShot.alpha = 0.70;
-		snapShot.layer.shadowOpacity = 1.0;
+		snapShot.alpha = 0.90;
+		snapShot.layer.shadowOpacity = 0.2;
 		snapShot.layer.shadowRadius = 4.0;
 		snapShot.layer.shadowOffset = CGSizeMake( 0, 1.5 );
 		// Looks better without the shadows path
@@ -619,7 +627,7 @@ static void *allowsLongPressToReorderDuringEditingKey = &allowsLongPressToReorde
 		// add drop shadow to image and lower opacity
 		snapShot.layer.masksToBounds = NO;
 		snapShot.layer.opacity = 0.6;
-		snapShot.layer.shadowOpacity = 0.7;
+		snapShot.layer.shadowOpacity = 0.2;
 		snapShot.layer.shadowRadius = 3.0;
 		snapShot.layer.shadowColor = [[UIColor blackColor] CGColor];
 		snapShot.layer.shadowOffset = CGSizeMake( 0, 1 );
@@ -639,7 +647,7 @@ static void *allowsLongPressToReorderDuringEditingKey = &allowsLongPressToReorde
 		shadowView.clipsToBounds = YES;
 		
 		shadowView.layer.shadowPath = topShadowPath.CGPath;
-		shadowView.layer.shadowOpacity = 0.7;
+		shadowView.layer.shadowOpacity = 0.2;
 		shadowView.layer.shadowOffset = CGSizeMake( 0, 0 );
 		shadowView.layer.shadowRadius = 3.0;
 		
@@ -656,7 +664,7 @@ static void *allowsLongPressToReorderDuringEditingKey = &allowsLongPressToReorde
 		shadowView.clipsToBounds = YES;
 		
 		shadowView.layer.shadowPath = bottomShadowPath.CGPath;
-		shadowView.layer.shadowOpacity = 0.7;
+		shadowView.layer.shadowOpacity = 0.2;
 		shadowView.layer.shadowOffset = CGSizeMake( 0, 0 );
 		shadowView.layer.shadowRadius = 3.0;
 		
@@ -669,7 +677,7 @@ static void *allowsLongPressToReorderDuringEditingKey = &allowsLongPressToReorde
 	touchedCell.frame = [self rectForRowAtIndexPath: indexPath];
 	touchedCell.backgroundColor = [UIColor whiteColor];
 	touchedCell.layer.opacity = 0.6;
-	touchedCell.layer.shadowOpacity = 1.0;
+	touchedCell.layer.shadowOpacity = 0.2;
 	touchedCell.layer.shadowRadius = 4.0;
 	touchedCell.layer.shadowOffset = CGSizeMake( 0, 1.5 );
 	touchedCell.layer.shadowPath = [[UIBezierPath bezierPathWithRect: touchedCell.layer.bounds] CGPath];
